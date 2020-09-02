@@ -77,8 +77,30 @@ router.post('/:id/comments', (req, res) => {
     )
 })
 
-/*-----PUT----*/
+/*-----PUT-----*/
+router.put('/:id', (req, res) => {
+    posts.update(req.body)
+        .then(post => {
+            if (req.params.id) {
+                if (req.body.title && req.body.contents) {
+                    res.status(200).json(post)
+                }else {res.status(400).json({ errorMessage: "Please provide title and contents for the post." }.)}
+        }else {res
+          .status(404)
+          .json({ message: "The post with the specified ID does not exist." })}
+        })
+    .catch(err => res.status(500).json({ error: "The post information could not be modified." }))
+})
 
-
+/*-----DELETE-----*/
+router.delete('/:id', (req, res) => {
+    posts.remove(req.params.id)
+        .then(post => {
+            if (req.params.id) {
+            res.status(200).json(post)
+        }else {res.status(404).json({ message: "The post with the specified ID does not exist." })}
+        })
+    .catch(err => res.status(500).json({ error: "The post could not be removed" }))
+})
 
 module.exports = router
